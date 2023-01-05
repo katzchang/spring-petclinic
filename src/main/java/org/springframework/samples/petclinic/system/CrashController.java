@@ -18,6 +18,10 @@ package org.springframework.samples.petclinic.system;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Arrays;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.common.AttributeKey;
+
 /**
  * Controller used to showcase what happens when an exception is thrown
  *
@@ -30,6 +34,9 @@ class CrashController {
 
 	@GetMapping("/oups")
 	public String triggerException() {
+		Span span = Span.current();
+		span.setAttribute(AttributeKey.stringArrayKey("test.multiple_string_values"),
+				Arrays.asList("hoge", "fuga", "ふー", "😁"));
 		throw new RuntimeException(
 				"Expected: controller used to showcase what " + "happens when an exception is thrown");
 	}
